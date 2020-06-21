@@ -2,19 +2,25 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from "react-redux"
 import {
     View, StyleSheet, Text, TextInput,
-    NativeSyntheticEvent, TextInputChangeEventData, Button, FlatList, Keyboard, Alert
+    NativeSyntheticEvent, TextInputChangeEventData,
+    Button, FlatList, Keyboard, Alert
 } from 'react-native'
 
-import { RootState } from "./Store"
-import { addTodo, removeTodo, editTodos } from './action';
-import { Obj } from './Types';
+
+import { RootState } from "../redux/Store"
+import { addTodo, removeTodo, editTodos } from '../redux/action';
+import { Obj } from '../redux/Types';
 import { EditModal } from './EditModal';
 
 
-export const AddTodo = (): JSX.Element => {
-    const arrayTodos= useSelector((state: RootState) => state.todos)
+export const AddTodo: React.FC = (): JSX.Element => {
+
+    const arrayTodos = useSelector((state: RootState) => state.todos)
+
     const [value, setValue] = useState<string>("");
     const [modal, setModal] = useState<boolean>(false);
+    const [todo, setTodos] = useState<Obj>({ id: "4", title: "rye" })
+
     const dispatch = useDispatch()
 
     const handelChange = (event: NativeSyntheticEvent<TextInputChangeEventData>): void => {
@@ -23,11 +29,10 @@ export const AddTodo = (): JSX.Element => {
 
     const addTodoList = (): void => {
         if (value.trim()) {
-            const todos: Obj = {
+            dispatch(addTodo({
                 id: Date.now().toString(),
                 title: value,
-            }
-            dispatch(addTodo(todos))
+            }))
             setValue("");
             Keyboard.dismiss();
         } else {
@@ -39,15 +44,18 @@ export const AddTodo = (): JSX.Element => {
         dispatch(removeTodo(id))
     }
 
-    const showModal = (): void => {
+
+    const handelEditTask = (task: Obj): void => {
         setModal(true)
+        setTodos(task)
     }
 
-    const saveEditsTodos = (title):void=>{
-        console.log('object', arrayTodos)
-        // dispatch(editTodos(value, id))
-        // setModal(false)
+    const saveEditsTodos = (title: string, id: string): void => {
+        dispatch(editTodos(title, id))
+        setModal(false)
     }
+
+    const todoForEditModal = <EditModal onCancel={() => setModal(false)} todo={todo} saveEditsTodos={saveEditsTodos} />
 
     return (
         <View style={styles.container}>
@@ -61,13 +69,13 @@ export const AddTodo = (): JSX.Element => {
                 renderItem={({ item }) => {
                     return (
                         <View style={styles.todoList}>
-                            <Text style={{ textAlign: "center", fontWeight: "600", fontSize: 20 }}>{item.title}</Text>
+                            <Text style={styles.text}>{item.title}</Text>
                             <Button title="DELETE TODO" onPress={() => removeTodos(item.id)} />
-                            <Button title="EDIT TODO" onPress={() => showModal()} />
+                            <Button title="EDIT TODO" onPress={() => handelEditTask(item)} />
                         </View>
                     )
                 }} />
-            {modal && <EditModal onCancel={() => setModal(false)} saveEditsTodos={saveEditsTodos} value={value}/>}
+            {modal && todoForEditModal}
         </View>
     );
 }
@@ -109,4 +117,9 @@ const styles = StyleSheet.create({
         marginRight: 20,
         paddingLeft: 10,
     },
+    text: {
+        textAlign: "center",
+        fontWeight: "600",
+        fontSize: 20
+    }
 })

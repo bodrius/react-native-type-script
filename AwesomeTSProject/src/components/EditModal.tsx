@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// import { useSelector, useDispatch } from "react-redux"
 import {
     View,
     Modal,
@@ -9,18 +8,18 @@ import {
     Alert,
 } from "react-native";
 
+import { Obj } from "../redux/Types";
 
 interface iProps {
-    // onCancel(x: boolean): void
     onCancel(): void
-    saveEditsTodos(title:string):void
-    value:string
+    saveEditsTodos(title:string, id:string):void
+    todo: Obj
 }
 
-export const EditModal = ({ onCancel, saveEditsTodos, value }: iProps) => {
+export const EditModal = ({ onCancel, saveEditsTodos, todo}: iProps) => {
     const [title, setTitle] = useState<string>("");
 
-    const editTask = () => {
+    const saveEditTask = () => {
         if (title.trim().length < 3) {
             Alert.alert(
                 "Error!",
@@ -30,10 +29,10 @@ export const EditModal = ({ onCancel, saveEditsTodos, value }: iProps) => {
             );
         }
         else {
-            saveEditsTodos(title)
+            saveEditsTodos(title, todo.id)
+            // console.log('todo', todo)
         }
     }
-
 
     return (
         <Modal animationType="slide" transparent={false}>
@@ -47,10 +46,9 @@ export const EditModal = ({ onCancel, saveEditsTodos, value }: iProps) => {
                     autoCapitalize="none"
                     maxLength={20}
                 />
-
                 <View style={styles.buttons}>
                     <Button title="Cancel" onPress={onCancel} color={"red"} />
-                    <Button title="Save" onPress={editTask} color={"black"} />
+                    <Button title="Save" onPress={saveEditTask} color={"black"} />
                 </View>
             </View>
         </Modal >

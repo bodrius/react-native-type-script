@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
 import {Provider} from "react-redux"
-import { AddTodo } from "./src/AddTodo"
-import store from './src/Store';
-import { NavBar } from './src/NavBar';
+import { AddTodo } from "./src/components/AddTodo"
+import store from './src/redux/Store';
+import { NavBar } from './src/components/NavBar';
 
 
 const App: React.SFC = (): ReactElement => {

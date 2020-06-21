@@ -10,7 +10,7 @@ export const removeTodo = (id: string): TodoActionInterfase => ({
   payload: id,
 });
 
-export const editTodos = (id: string, title: string): TodoActionInterfase => ({
+export const editTodos = (title:string, id: string): TodoActionInterfase => ({
   type: UPDATE_TODO,
-  payload: {id, title}
+  payload: {title, id}
 });

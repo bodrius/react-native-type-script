@@ -9,14 +9,14 @@ export default (state = INITIAL_STATE, action: TodoActionInterfase):Obj[] => {
             return [...state, action.payload];
         case REMOVE:
             return state.filter((todo) => todo.id !== action.payload);
-            // case UPDATE_TODO:
-            //     return {...state, todos: state.map((todo:any)=> {
-            //           if (todo.id === action.payload.id) {
-            //             todo.title = action.payload.title;
-            //           }
-            //           return todo;
-            //         }),
-            //     }
+            case UPDATE_TODO:
+                return [  ...state.map((todo:Obj)=> {
+                      if (todo.id === action.payload.id) {
+                        todo.title = action.payload.title;
+                      }
+                      return todo;
+                    })
+                ]
         default:
             return state;
     }
