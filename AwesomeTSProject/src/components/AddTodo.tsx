@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux"
 import {
     View, StyleSheet, Text, TextInput,
     NativeSyntheticEvent, TextInputChangeEventData,
-    Button, FlatList, Keyboard, Alert
+    Button, FlatList, Keyboard, Alert, ScrollView
 } from 'react-native'
 
 
@@ -11,6 +11,7 @@ import { RootState } from "../redux/Store"
 import { addTodo, removeTodo, editTodos } from '../redux/action';
 import { Obj } from '../redux/Types';
 import { EditModal } from './EditModal';
+import { NavBar } from './NavBar';
 
 
 export const AddTodo: React.FC = (): JSX.Element => {
@@ -29,10 +30,11 @@ export const AddTodo: React.FC = (): JSX.Element => {
 
     const addTodoList = (): void => {
         if (value.trim()) {
-            dispatch(addTodo({
+            let todo = {
                 id: Date.now().toString(),
                 title: value,
-            }))
+            }
+            dispatch(addTodo(todo))
             setValue("");
             Keyboard.dismiss();
         } else {
@@ -58,25 +60,32 @@ export const AddTodo: React.FC = (): JSX.Element => {
     const todoForEditModal = <EditModal onCancel={() => setModal(false)} todo={todo} saveEditsTodos={saveEditsTodos} />
 
     return (
+        <>
+        <NavBar props={"Bogdan"}/>
         <View style={styles.container}>
             <View style={styles.block}>
                 <TextInput style={styles.input} autoCompleteType="off" value={value} placeholder="write Bogdan please" onChange={handelChange} />
                 <Button title="ADD TODO" onPress={addTodoList} />
             </View>
+            <ScrollView>
             <FlatList
                 data={arrayTodos}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => {
                     return (
                         <View style={styles.todoList}>
+                            
                             <Text style={styles.text}>{item.title}</Text>
                             <Button title="DELETE TODO" onPress={() => removeTodos(item.id)} />
                             <Button title="EDIT TODO" onPress={() => handelEditTask(item)} />
+                            
                         </View>
                     )
                 }} />
+                </ScrollView>
             {modal && todoForEditModal}
         </View>
+        </>
     );
 }
 
